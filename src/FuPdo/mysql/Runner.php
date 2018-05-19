@@ -41,7 +41,7 @@ class Runner
      */
     private $returnType;
     const ReturnOneField = 1;
-    const ReturnOneArrayRow = 2;
+    const ReturnOneRow = 2;
     const ReturnOneObjRow = 3;
     const ReturnArray = 4;
     const ReturnObj = 5;
@@ -106,6 +106,26 @@ class Runner
 
     public function __construct(){}
 
+    private $witchDB = 'default';
+
+    /**
+     * @param $witchDB
+     * @return $this
+     */
+    public function setWitchDB($witchDB)
+    {
+        $this->witchDB = $witchDB;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getWitchDB()
+    {
+        return $this->witchDB;
+    }
+
     /**
      * @return int|mixed|null|string
      * @throws \Exception
@@ -166,9 +186,9 @@ class Runner
     private function connectDb()
     {
         if ($this->runType == self::RunExec){
-            $this->db = &Connect::GetWriteDB(self::DB);
+            $this->db = Connect::GetWriteDB($this->witchDB);
         }else{
-            $this->db = &Connect::GetReadDB(self::DB);
+            $this->db = Connect::GetReadDB($this->witchDB);
         }
     }
 

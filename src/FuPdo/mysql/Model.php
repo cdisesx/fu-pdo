@@ -10,14 +10,12 @@ namespace FuPdo\mysql;
 
 class Model
 {
-    protected static $DB;
-    protected static $TABLE;
-
     public function __construct(){}
 
     public static function Builder()
     {
-        return Builder::getInstance(self::$DB, self::$TABLE);
+        $Class = get_called_class();
+        return Builder::getInstance($Class::$DB, $Class::$TABLE);
     }
 
 }

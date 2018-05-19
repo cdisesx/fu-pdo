@@ -13,27 +13,6 @@ class Conf
 {
     /**
      * @var array
-     *
-    //        [
-    //            "default"=>[
-    //                "dbType"=>"Mysql",
-    //                "mysqlAttrInitCommand"=>"SET NAMES UTF8",
-    //                "read"=>[
-    //                    "host"=>"127.0.0.1",
-    //                    "port"=>"3306",
-    //                    "user"=>"root",
-    //                    "password"=>"",
-    //                    "dbname"=>"test"
-    //                ],
-    //                "write"=>[
-    //                    "host"=>"127.0.0.1",
-    //                    "port"=>"3306",
-    //                    "user"=>"root",
-    //                    "password"=>"",
-    //                    "dbname"=>"test"
-    //                ],
-    //            ],
-    //        ];
      */
     private $config = [];
 
@@ -70,27 +49,6 @@ class Conf
     public static function InitConf($conf)
     {
         self::getInstance()->setConf($conf);
-
-//        [
-//            "dbType"=>"Mysql",
-//            "default"=>[
-//                "read"=>[
-//                    "host"=>"127.0.0.1",
-//                    "port"=>"3306",
-//                    "user"=>"root",
-//                    "password"=>"",
-//                    "dbname"=>"test"
-//                ],
-//                "write"=>[
-//                    "host"=>"127.0.0.1",
-//                    "port"=>"3306",
-//                    "user"=>"root",
-//                    "password"=>"",
-//                    "dbname"=>"test"
-//                ],
-//            ],
-//        ];
-
     }
 
     /**

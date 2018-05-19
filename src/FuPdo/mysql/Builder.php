@@ -35,7 +35,7 @@ class Builder extends SqlCreater
     public function getRunner()
     {
         if (!($this->runner instanceof Runner)){
-            $this->runner = Runner::getInstance();
+            $this->runner = Runner::getInstance()->setWitchDB($this->db);
         }
         return $this->runner;
     }
@@ -56,7 +56,7 @@ class Builder extends SqlCreater
     public function Find()
     {
         $this->CreateSelectSql();
-        return $this->getData(Runner::RunQuery, Runner::ReturnOneArrayRow);
+        return $this->getData(Runner::RunQuery, Runner::ReturnOneRow);
     }
 
     /**
@@ -65,7 +65,7 @@ class Builder extends SqlCreater
     public function FindAsObj()
     {
         $this->CreateSelectSql();
-        return $this->getData(Runner::RunQuery, Runner::RunQuery, Runner::ReturnOneObjRow);
+        return $this->getData(Runner::RunQuery, Runner::ReturnOneObjRow);
     }
 
     /**
@@ -74,6 +74,7 @@ class Builder extends SqlCreater
     public function Select()
     {
         $this->CreateSelectSql();
+//        p($this->GetSelectSql());
         return $this->getData(Runner::RunQuery, Runner::ReturnArray);
     }
 
@@ -92,6 +93,15 @@ class Builder extends SqlCreater
     public function One()
     {
         $this->CreateSelectSql();
+        return $this->getData(Runner::RunQuery, Runner::ReturnOneField);
+    }
+
+    /**
+     * @return int|mixed|null|string
+     */
+    public function Count()
+    {
+        $this->CreateCountSql();
         return $this->getData(Runner::RunQuery, Runner::ReturnOneField);
     }
 

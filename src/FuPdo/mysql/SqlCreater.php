@@ -64,9 +64,9 @@ class SqlCreater
     protected function _initFieldSql()
     {
         if (count($this->field) == 0){
-            $this->sql = ' *';
+            $this->sql .= ' *';
         }else{
-            $this->sql = join(',', $this->field);
+            $this->sql .= join(',', $this->field);
         }
 
     }
@@ -78,13 +78,13 @@ class SqlCreater
 
     public function Table($table)
     {
-        $this->table = $this->table;
+        $this->table = $table;
         return $this;
     }
 
     protected function _initTableSql()
     {
-        $this->sql = ' '.$this->table;
+        $this->sql .= ' '.$this->table;
     }
 
     /**
@@ -117,7 +117,7 @@ class SqlCreater
     protected function _initWhereSql()
     {
         if ($this->createWhere){
-            $this->sql .= ' WHERE ( ' . join(') AND (', array_column($this->where['sql'])) . ' )';
+            $this->sql .= ' WHERE (' . join(') AND (', array_column($this->where, 'sql')) . ')';
             foreach ($this->where as $item) {
                 $this->addBindValues($item['bind'], substr_count($item['sql'], '?'));
             }
@@ -240,8 +240,8 @@ class SqlCreater
         $this->createLimit = true;
         $page = intval($page);
         $pageSize = intval($pageSize);
-        $this->offset = min(0, ($page*$pageSize - 1));
-        $this->limit = min(0, pageSize);
+        $this->offset = max(0, ( ($page - 1) * $pageSize ));
+        $this->limit = max(0, $pageSize);
         return $this;
     }
 
@@ -281,10 +281,11 @@ class SqlCreater
      */
     protected function CreateSelectSql()
     {
-        $this->sql = 'SELECT '.
+        $this->bindValues = [];
+        $this->sql = 'SELECT ';
         $this->_initFieldSql();
 
-        $this->sql .= ' FROM ';
+        $this->sql .= ' FROM';
         $this->_initTableSql();
 
         $this->_initJoinSql();
@@ -295,12 +296,30 @@ class SqlCreater
     }
 
     /**
+     * 生成 Select Sql
+     */
+    protected function CreateCountSql()
+    {
+        $this->bindValues = [];
+        $this->sql = 'SELECT count(1) FROM';
+        $this->_initTableSql();
+        $this->_initJoinSql();
+        $this->_initWhereSql();
+
+        if ($this->createGroup){
+            $this->_initGroupSql();
+            $this->sql = 'SELECT count(1) FROM (' . $this->sql . ')';
+        }
+    }
+
+    /**
      * 生成InsertSql Params 必须必须有值
      * @param array $params
      */
     protected function CreateInserSql($params)
     {
         if(($len = count($params)) > 0){
+            $this->bindValues = [];
             $bindValues = array_values($params);
             $this->field = [];
             $this->field(array_keys($params));
@@ -314,9 +333,9 @@ class SqlCreater
             $this->sql = 'INSERT INTO ';
             $this->_initTableSql();
 
-            $this->sql .= ' ';
+            $this->sql .= ' (';
             $this->_initFieldSql();
-            $this->sql .= ' VALUES (' . join(',', $bindArr) . ') ';
+            $this->sql .= ') VALUES (' . join(',', $bindArr) . ') ';
         }
     }
 
@@ -328,6 +347,7 @@ class SqlCreater
     protected function CreateUpdateSql($params)
     {
         if(count($this->where) > 0 && ($len = count($params)) > 0){
+            $this->bindValues = [];
             $bindValues = array_values($params);
             $this->addBindValues($bindValues, $len);
 
@@ -348,21 +368,21 @@ class SqlCreater
     }
 
     /**
+     * @return string
+     */
+    public function GetSelectSql()
+    {
+        $this->CreateSelectSql();
+        return $this->CreateRealSql();
+    }
+
+    /**
      * @param $params
      * @return string
      */
     public function GetInsertSql($params)
     {
         $this->CreateInserSql($params);
-        return $this->CreateRealSql();
-    }
-
-    /**
-     * @return string
-     */
-    public function GetSelectSql()
-    {
-        $this->CreateSelectSql();
         return $this->CreateRealSql();
     }
 
@@ -384,6 +404,7 @@ class SqlCreater
     {
         $sqlArr = explode('?', ' '. $this->sql .' ');
         $realSql = '';
+
         foreach ($sqlArr as $k=>$v) {
             if(isset($this->bindValues[$k])){
                 $bindVal = $this->bindValues[$k];

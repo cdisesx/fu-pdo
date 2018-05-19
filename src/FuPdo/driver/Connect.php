@@ -55,13 +55,23 @@ class Connect
     private $user;
     private $password;
     private $dbname;
+    private $dbType;
+    private $dbOptions;
     private function initCurrentConfig($witchDB, $readOrWrite)
     {
-        $this->host = $this->config[$witchDB][$readOrWrite]['host'];
-        $this->port = $this->config[$witchDB][$readOrWrite]['port'];
-        $this->user = $this->config[$witchDB][$readOrWrite]['user'];
-        $this->password = $this->config[$witchDB][$readOrWrite]['password'];
-        $this->dbname = $this->config[$witchDB][$readOrWrite]['dbname'];
+        $currentConfig = $this->config[$witchDB];
+
+        if (!isset($currentConfig[$readOrWrite])){
+            $readOrWrite = 'write';
+        }
+
+        $this->dbType = $currentConfig['dbType'];
+        $this->dbOptions = $currentConfig['dbOptions'];
+        $this->host = $currentConfig[$readOrWrite]['host'];
+        $this->port = $currentConfig[$readOrWrite]['port'];
+        $this->user = $currentConfig[$readOrWrite]['user'];
+        $this->password = $currentConfig[$readOrWrite]['password'];
+        $this->dbname = $currentConfig[$readOrWrite]['dbname'];
     }
 
     /**
@@ -96,13 +106,14 @@ class Connect
         if(!($db instanceof \PDO)){
             $this->initCurrentConfig($witchDB, $readOrWrite);
 
-            $callFunName = "get{$this->config[$witchDB]['dbType']}Dsn";
+            $callFunName = "get{$this->dbType}Dsn";
             $dns = $this->$callFunName();
 
-            $callFunName = "get{$this->config[$witchDB]['dbType']}Options";
+            $callFunName = "get{$this->dbType}Options";
             $options = $this->$callFunName();
 
             $db = self::connentDB($dns, $this->user, $this->password, $options);
+            $db->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
             $this->db_list[$witchDB][$readOrWrite] = $db;
         }
 
@@ -142,11 +153,11 @@ class Connect
     /**
      * 获取MysqlOptions
      */
-    private function getMysqlOptions($dbConf)
+    private function getMysqlOptions()
     {
         $options = array();
-        if (isset($dbConf['mysqlAttrInitCommand'])){
-            $options[\PDO::MYSQL_ATTR_INIT_COMMAND] = $dbConf['mysqlAttrInitCommand'];
+        if(isset($this->dbOptions['attrInitCommand'])){
+            $options[\PDO::MYSQL_ATTR_INIT_COMMAND] = $this->dbOptions['attrInitCommand'];
         }
         return $options;
     }
