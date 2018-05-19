@@ -12,13 +12,6 @@ $config = [
         "dbOptions"=>[
             'attrInitCommand'=>'SET NAMES UTF8'
         ],
-        "read"=>[
-            "host"=>"192.168.33.10",
-            "port"=>"3306",
-            "user"=>"root",
-            "password"=>"",
-            "dbname"=>"club"
-        ],
         "write"=>[
             "host"=>"127.0.0.1",
             "port"=>"3306",
@@ -38,14 +31,16 @@ require './Helper.php';
 
 $controller = new \test\Controller\UserController();
 
-//$detail = $controller->getDetail();
-//p($detail, 0);
+$detail = $controller->getDetail();
+p($detail, 0);
 
 
-//$id = $controller->doInsert();
-//p($id,0);
-//
-//
+$id = $controller->doInsert();
+p($id,0);
+
+
 $data = $controller->getList();
 p($data, 0);
 
+$ok = $controller->doUpdate();
+vp($ok,0);

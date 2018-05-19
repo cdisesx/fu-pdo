@@ -26,10 +26,7 @@ class UserController
         $data = $builder->Select();
         $count = $builder->Count();
 
-        echo $count;
-        p($data);
-
-        return $data;
+        return ['count'=>$count,'list'=>$data];
     }
 
     public function getDetail()
@@ -44,7 +41,6 @@ class UserController
         return $data;
     }
 
-
     public function doInsert()
     {
         $params = [
@@ -53,6 +49,18 @@ class UserController
             'email'=>'eeeeee'
         ];
         $data = UserModel::Builder()->Insert($params);
+
+        return $data;
+    }
+
+    public function doUpdate()
+    {
+        $params = [
+            'name'=>'lalalla',
+            'tel'=>2222,
+            'email'=>'hahha'
+        ];
+        $data = UserModel::Builder()->Where('id = 88')->Update($params);
 
         return $data;
     }
