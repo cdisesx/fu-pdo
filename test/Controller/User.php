@@ -38,12 +38,16 @@ class UserController
             ->Table('user u')
             ->LeftJoin('member_info m', 'm.user_id = u.id')
             ->LeftJoin('class_info c', 'c.id = m.class_id')
-            ->Page(1,10);
+            ->Page(1,10)
+            ->GroupBy('u.id')
+            ->OrderBy('u.id asc')
+            ->OrderBy('c.class_name desc');
 //            ->Where('id in (?,?,?)', [60,61,62,63])
 //            ->Where('account = ?', ['wenbao'])
 //            ->GetSelectSql();
 //            ->Count();
 
+        echo $builder->GetSelectSql();
         $data = $builder->Select();
         $count = $builder->Count();
 
@@ -69,6 +73,8 @@ class UserController
             'tel'=>111,
             'email'=>'eeeeee'
         ];
+
+        echo UserModel::Builder()->GetInsertSql($params);
         $data = UserModel::Builder()->Insert($params);
 
         return $data;
@@ -81,12 +87,13 @@ class UserController
             'tel'=>2222,
             'email'=>'hahha'
         ];
+        echo UserModel::Builder()->Where('id = 88')->GetInsertSql($params);
         $data = UserModel::Builder()->Where('id = 88')->GetUpdateSql($params);
 
         return $data;
     }
 
-    public function doThing()
+    public function doTransaction()
     {
 //        $db = UserModel::Builder()->Begin();
 //        $params = [

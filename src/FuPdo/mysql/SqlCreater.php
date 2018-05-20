@@ -222,7 +222,7 @@ class SqlCreater
     protected function _initGroupSql()
     {
         if ($this->createGroup){
-            $this->sql .= ' GROUP BY '+join(',', $this->group);
+            $this->sql .= ' GROUP BY ' . join(',', $this->group);
         }
     }
 
@@ -272,7 +272,7 @@ class SqlCreater
     protected function _initOrderSql()
     {
         if ($this->createOrder){
-            $this->sql .= ' ORDER BY '+join(',', $this->order);
+            $this->sql .= ' ORDER BY ' . join(',', $this->order);
         }
     }
 
@@ -291,8 +291,8 @@ class SqlCreater
         $this->_initJoinSql();
         $this->_initWhereSql();
         $this->_initGroupSql();
-        $this->_initLimitSql();
         $this->_initOrderSql();
+        $this->_initLimitSql();
     }
 
     /**

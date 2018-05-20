@@ -47,7 +47,7 @@ p($detail, 0);
 //vp($ok,0);
 
 
-//$ok = $controller->doThing();
+//$ok = $controller->doTransaction();
 //vp($ok,0);
 
 

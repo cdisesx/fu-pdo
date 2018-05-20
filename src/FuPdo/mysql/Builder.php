@@ -74,7 +74,6 @@ class Builder extends SqlCreater
     public function Select()
     {
         $this->CreateSelectSql();
-//        p($this->GetSelectSql());
         return $this->getData(Runner::RunQuery, Runner::ReturnArray);
     }
 
