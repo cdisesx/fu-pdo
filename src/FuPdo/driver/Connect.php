@@ -129,11 +129,11 @@ class Connect
      * @return \PDO
      * @throws \Exception
      */
-    private static function connentDB($dsn, $user, $password)
+    private static function connentDB($dsn, $user, $password, $options)
     {
         try
         {
-            $db = new \PDO($dsn, $user, $password);
+            $db = new \PDO($dsn, $user, $password, $options);
             return $db;
         }
         catch (\Exception $e){
@@ -147,7 +147,7 @@ class Connect
      */
     private function getMysqlDsn()
     {
-        return "mysql:host={$this->host};dbname={$this->dbname};port={$this->port}";
+        return "mysql:host={$this->host};dbname={$this->dbname};port={$this->port};";
     }
 
     /**

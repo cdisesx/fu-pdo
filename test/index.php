@@ -31,16 +31,23 @@ require './Helper.php';
 
 $controller = new \test\Controller\UserController();
 
-$detail = $controller->getDetail();
+//$detail = $controller->getDetail();
+//p($detail, 0);
+
+$detail = $controller->getJoinList();
 p($detail, 0);
 
+//$id = $controller->doInsert();
+//p($id,0);
 
-$id = $controller->doInsert();
-p($id,0);
+//$data = $controller->getList();
+//p($data, 0);
+
+//$ok = $controller->doUpdate();
+//vp($ok,0);
 
 
-$data = $controller->getList();
-p($data, 0);
+//$ok = $controller->doThing();
+//vp($ok,0);
 
-$ok = $controller->doUpdate();
-vp($ok,0);
+

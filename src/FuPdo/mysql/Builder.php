@@ -147,28 +147,42 @@ class Builder extends SqlCreater
         return $data;
     }
 
+    /**
+     * @return $this
+     */
     public function Begin()
     {
         try{
             $this->getRunner()->setRunType(Runner::RunExec)->Begin();
+            return $this;
         }catch (\Exception $e){
             $this->error_code = $e->getCode();
             $this->error_message= $e->getMessage();
         }
     }
+
+    /**
+     * @return $this
+     */
     public function Commit()
     {
         try{
             $this->getRunner()->setRunType(Runner::RunExec)->Commit();
+            return $this;
         }catch (\Exception $e){
             $this->error_code = $e->getCode();
             $this->error_message= $e->getMessage();
         }
     }
+
+    /**
+     * @return $this
+     */
     public function RollBack()
     {
         try{
             $this->getRunner()->setRunType(Runner::RunExec)->RollBack();
+            return $this;
         }catch (\Exception $e){
             $this->error_code = $e->getCode();
             $this->error_message= $e->getMessage();
