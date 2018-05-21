@@ -56,7 +56,7 @@ $config = [
     ]
 ];
 ```
-- It has its own config class. Use initConf to set config before you query or exec
+- It has own config class. Use initConf to set config before query or exec
 ```shell
  \FuPdo\driver\Conf::InitConf($config);
 ```
