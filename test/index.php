@@ -34,8 +34,8 @@ $controller = new \test\Controller\UserController();
 //$detail = $controller->getDetail();
 //p($detail, 0);
 
-$detail = $controller->getJoinList();
-p($detail, 0);
+//$detail = $controller->getJoinList();
+//p($detail, 0);
 
 //$id = $controller->doInsert();
 //p($id,0);
@@ -49,5 +49,7 @@ p($detail, 0);
 
 //$ok = $controller->doTransaction();
 //vp($ok,0);
+
+$controller->getSqlErr();
 
 

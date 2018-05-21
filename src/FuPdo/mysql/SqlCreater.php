@@ -25,16 +25,46 @@ class SqlCreater
     protected $sql = '';
 
     /**
+     * @param $sql
+     * @return $this
+     */
+    public function setSql($sql)
+    {
+        $this->sql = $sql;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSql()
+    {
+        return $this->sql;
+    }
+
+    /**
      * @var array
      */
     protected $bindValues = [];
 
     /**
+     * @param array $bindValues
+     */
+    public function setBindValues($bindValues)
+    {
+        $this->bindValues = $bindValues;
+    }
+
+    /**
      * @param $bindValues
      * @param $num
      */
-    protected function addBindValues($bindValues, $num)
+    protected function addBindValues($bindValues, $num = null)
     {
+        if (is_null($num)){
+            $num = count($bindValues);
+        }
+
         $i = 0;
         foreach ($bindValues as $v) {
             if ($i < $num){
@@ -370,7 +400,7 @@ class SqlCreater
     /**
      * @return string
      */
-    public function GetSelectSql()
+    public function getSelectSql()
     {
         $this->CreateSelectSql();
         return $this->CreateRealSql();
@@ -380,7 +410,7 @@ class SqlCreater
      * @param $params
      * @return string
      */
-    public function GetInsertSql($params)
+    public function getInsertSql($params)
     {
         $this->CreateInserSql($params);
         return $this->CreateRealSql();
@@ -390,7 +420,7 @@ class SqlCreater
      * @param $params
      * @return string
      */
-    public function GetUpdateSql($params)
+    public function getUpdateSql($params)
     {
         $this->CreateUpdateSql($params);
         return $this->CreateRealSql();
@@ -405,8 +435,10 @@ class SqlCreater
         $sqlArr = explode('?', ' '. $this->sql .' ');
         $realSql = '';
 
+        $i = 1;
+        $lenArr = count($sqlArr);
         foreach ($sqlArr as $k=>$v) {
-            if(isset($this->bindValues[$k])){
+            if(isset($this->bindValues[$k]) && $i != $lenArr){
                 $bindVal = $this->bindValues[$k];
                 if(is_string($bindVal)){
                     $bindVal = "'{$bindVal}'";
@@ -414,7 +446,10 @@ class SqlCreater
                 $realSql .= $v .$bindVal;
             }else{
                 $realSql .= $v;
+                break;
             }
+
+            $i++;
         }
         return trim($realSql);
     }

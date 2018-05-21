@@ -5,7 +5,9 @@ Package PHP-PDO
 -  Select、Find、One
 -  Insert、Update
 -  Begin、RollBack、Commit
--  GetSelectSql、GetUpdateSql、GetInsertSql
+-  Query、Exec
+-  getSelectSql、getUpdateSql、getInsertSql、getErrorMessage、getErrorCode
+
 
 
 DB Config  
@@ -53,6 +55,10 @@ $config = [
         ]
     ]
 ];
+```
+- It has its own config class. Use initConf to set config before you query or exec
+```shell
+ \FuPdo\driver\Conf::InitConf($config);
 ```
 
 Extend Model 
@@ -104,7 +110,7 @@ class UserModel extends Model
             ->OrderBy('u.id asc')
             ->OrderBy('c.class_name desc');
             ->Page(1,10);
-        echo $builder->GetSelectSql();
+        echo $builder->getSelectSql();
         return [
             'count'=>$builder->Count(),
             'list'=>$builder->Select()
@@ -112,7 +118,7 @@ class UserModel extends Model
     }
 ```
 
-Insert GetInsertSql
+Insert getInsertSql
 ---
 ```shell
     public function doInsert()
@@ -122,12 +128,12 @@ Insert GetInsertSql
             'tel'=>111,
             'email'=>'eeeeee'
         ];
-        echo UserModel::Builder()->GetInsertSql($params);
+        echo UserModel::Builder()->getInsertSql($params);
         return UserModel::Builder()->Insert($params);
     }
 ```
 
-Update GetInsertSql
+Update getInsertSql
 ---
 
 ```shell
@@ -139,8 +145,8 @@ Update GetInsertSql
             'email'=>'hahha'
         ];
         
-        echo UserModel::Builder()->Where('id = 88')->GetInsertSql($params);
-        return UserModel::Builder()->Where('id = 88')->GetUpdateSql($params);
+        echo UserModel::Builder()->Where('id = 88')->getInsertSql($params);
+        return UserModel::Builder()->Where('id = 88')->getUpdateSql($params);
     }
 ```
 
@@ -171,4 +177,24 @@ Transaction Begin RollBack Commit
         
         return $data;
     }
+```
+
+getErrMessage getErrCode
+---
+
+```shell
+    public function getSqlErr()
+    {
+        $builder = UserModel::Builder()
+            ->Table('user u')
+            ->Where('lalalala in (?,?,?)', [60,61,62,63])
+            >Select();
+
+        $builder->Select();
+        var_dump( $builder->getErrorCode() );
+        echo $builder->getErrorMessage();
+    }
+    
+    // print string '42S22' (length=5)
+    // print SQLSTATE[42S22]: Column not found: 1054 Unknown column 'lalalala' in 'where clause'
 ```

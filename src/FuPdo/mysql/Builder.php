@@ -43,12 +43,44 @@ class Builder extends SqlCreater
     /**
      * @var int
      */
-    public $error_code = 0;
+    private $error_code = 0;
+
+    /**
+     * @return int
+     */
+    public function getErrorCode()
+    {
+        return $this->error_code;
+    }
+
+    /**
+     * @param int $error_code
+     */
+    public function setErrorCode($error_code)
+    {
+        $this->error_code = $error_code;
+    }
 
     /**
      * @var string
      */
-    public $error_message = '';
+    private $error_message = '';
+
+    /**
+     * @return string
+     */
+    public function getErrorMessage()
+    {
+        return $this->error_message;
+    }
+
+    /**
+     * @param string $error_message
+     */
+    public function setErrorMessage($error_message)
+    {
+        $this->error_message = $error_message;
+    }
 
     /**
      * @return int|mixed|null|string
@@ -75,6 +107,30 @@ class Builder extends SqlCreater
     {
         $this->CreateSelectSql();
         return $this->getData(Runner::RunQuery, Runner::ReturnArray);
+    }
+
+    /**
+     * @param $sql
+     * @param $params
+     * @return int|mixed|null|string
+     */
+    public function Query($sql, $params)
+    {
+        $this->setSql($sql);
+        $this->setBindValues($params);
+        return $this->getData(Runner::RunQuery, Runner::ReturnArray);
+    }
+
+    /**
+     * @param $sql
+     * @param $params
+     * @return int|mixed|null|string
+     */
+    public function Exec($sql, $params)
+    {
+        $this->setSql($sql);
+        $this->setBindValues($params);
+        return $this->getData(Runner::RunExec, Runner::ReturnArray);
     }
 
     /**

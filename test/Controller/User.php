@@ -41,17 +41,29 @@ class UserController
             ->Page(1,10)
             ->GroupBy('u.id')
             ->OrderBy('u.id asc')
-            ->OrderBy('c.class_name desc');
-//            ->Where('id in (?,?,?)', [60,61,62,63])
-//            ->Where('account = ?', ['wenbao'])
+            ->OrderBy('c.class_name desc')
+            ->Where('u.id in (?,?,?)', [60,61,62,63])
+            ->Where('u.account = ?', ['wenbao']);
 //            ->GetSelectSql();
 //            ->Count();
 
-        echo $builder->GetSelectSql();
+        echo $builder->getSelectSql();
         $data = $builder->Select();
         $count = $builder->Count();
 
         return ['count'=>$count,'list'=>$data];
+    }
+
+    public function getSqlErr()
+    {
+        $builder = UserModel::Builder()
+            ->Table('user u')
+            ->Where('lalalala in (?,?,?)', [60,61,62,63])
+            >Select();
+
+        $builder->Select();
+        var_dump( $builder->getErrorCode() );
+        echo $builder->getErrorMessage();
     }
 
     public function getDetail()
@@ -74,7 +86,7 @@ class UserController
             'email'=>'eeeeee'
         ];
 
-        echo UserModel::Builder()->GetInsertSql($params);
+        echo UserModel::Builder()->getInsertSql($params);
         $data = UserModel::Builder()->Insert($params);
 
         return $data;
@@ -87,7 +99,7 @@ class UserController
             'tel'=>2222,
             'email'=>'hahha'
         ];
-        echo UserModel::Builder()->Where('id = 88')->GetInsertSql($params);
+        echo UserModel::Builder()->Where('id = 88')->getInsertSql($params);
         $data = UserModel::Builder()->Where('id = 88')->GetUpdateSql($params);
 
         return $data;
