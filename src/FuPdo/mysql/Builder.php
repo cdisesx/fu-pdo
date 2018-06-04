@@ -111,10 +111,22 @@ class Builder extends SqlCreater
 
     /**
      * @param $sql
+     * @param array $params
+     * @return $this
+     */
+    public function Sql($sql, $params = [])
+    {
+        $this->setSql($sql);
+        $this->setBindValues($params);
+        return $this;
+    }
+
+    /**
+     * @param $sql
      * @param $params
      * @return int|mixed|null|string
      */
-    public function Query($sql, $params)
+    public function Query($sql, $params = [])
     {
         $this->setSql($sql);
         $this->setBindValues($params);
@@ -126,7 +138,7 @@ class Builder extends SqlCreater
      * @param $params
      * @return int|mixed|null|string
      */
-    public function Exec($sql, $params)
+    public function Exec($sql, $params = [])
     {
         $this->setSql($sql);
         $this->setBindValues($params);
