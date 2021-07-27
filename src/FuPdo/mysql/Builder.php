@@ -8,7 +8,7 @@
 
 namespace FuPdo\mysql;
 
-class Builder extends SqlCreater
+class Builder extends SqlCreator
 {
 
     /**

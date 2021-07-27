@@ -12,7 +12,7 @@ namespace FuPdo\mysql;
 // 加入Update
 // 日志
 
-class SqlCreater
+class SqlCreator
 {
     /**
      * @var string 准备连接的库名

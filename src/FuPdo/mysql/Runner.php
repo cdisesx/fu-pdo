@@ -15,8 +15,7 @@ class Runner
 {
     public static function getInstance()
     {
-        $runner = new self();
-        return $runner;
+        return new self();
     }
 
     /**

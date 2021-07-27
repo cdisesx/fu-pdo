@@ -126,15 +126,14 @@ class Connect
      * @param $dsn
      * @param $user
      * @param $password
+     * @param $options
      * @return \PDO
-     * @throws \Exception
      */
-    private static function connentDB($dsn, $user, $password, $options)
+    private static function connectDB($dsn, $user, $password, $options)
     {
         try
         {
-            $db = new \PDO($dsn, $user, $password, $options);
-            return $db;
+            return new \PDO($dsn, $user, $password, $options);
         }
         catch (\Exception $e){
             throw $e;
