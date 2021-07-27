@@ -1,12 +1,12 @@
 {
-    "name": "cdisesx/php-pdo",
+    "name": "cdisesx/fu-pdo",
     "description": "A Simple PHP-PDO SDK",
-    "homepage": "https://github.com/cdisesx/php-pdo",
+    "homepage": "https://github.com/cdisesx/fu-pdo",
     "type": "library",
     "authors": [
         {
             "name": "githubSource",
-            "homepage": "https://github.com/cdisesx/php-pdo"
+            "homepage": "https://github.com/cdisesx/fu-pdo"
         }
     ],
     "require": {
