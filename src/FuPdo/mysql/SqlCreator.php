@@ -131,11 +131,14 @@ class SqlCreator
 
     /**
      * @param $sql
-     * @param array $bindParams
+     * @param array|max $bindParams
      * @return $this
      */
     public function Where($sql, $bindParams = [])
     {
+        if(!is_array($bindParams)){
+            $bindParams = [$bindParams];
+        }
         $this->createWhere = true;
         $this->where[] = [
             'sql'=>$sql,
