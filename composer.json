@@ -1,8 +1,6 @@
 {
     "name": "cdisesx/fu-pdo",
     "description": "A Simple PHP-PDO SDK",
-    "homepage": "https://github.com/cdisesx/fu-pdo",
-    "type": "library",
     "authors": [
         {
             "name": "githubSource",
@@ -10,7 +8,7 @@
         }
     ],
     "require": {
-        "php":"^5.5|^7.0"
+        "php":"^7.0|^5.5"
     },
     "autoload": {
         "psr-4": {"FuPdo\\": "src/FuPdo"}
