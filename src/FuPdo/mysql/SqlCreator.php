@@ -25,6 +25,11 @@ class SqlCreator
     protected $sql = '';
 
     /**
+     * @var bool
+     */
+    protected $emptyReturn = false;
+
+    /**
      * @param $sql
      * @return $this
      */
@@ -147,6 +152,31 @@ class SqlCreator
         return $this;
     }
 
+    /**
+     * @param $field
+     * @param array $params
+     * @return $this
+     */
+    public function WhereIn($field, $params = [])
+    {
+        if(!is_array($params)){
+            $this->where("$field = ?", $params);
+        }
+        $paramsLen = count($params);
+        if($paramsLen == 0){
+            $this->emptyReturn = true;
+        }else if($paramsLen == 1){
+            $this->where("$field = ?", $params[0]);
+        }else{
+            $pS = [];
+            for($i=0;$i<$paramsLen;$i++){
+                $pS[] = '?';
+            }
+            $this->where("$field = (". join($pS, ",") . ")", $params);
+        }
+        return $this;
+    }
+
     protected function _initWhereSql()
     {
         if ($this->createWhere){
@@ -243,13 +273,13 @@ class SqlCreator
     private $createGroup = false;
 
     /**
-     * @param string $groupby
+     * @param string $groupBy
      * @return $this
      */
-    public function GroupBy($groupby)
+    public function GroupBy($groupBy)
     {
         $this->createGroup = true;
-        $this->group[] = addslashes($groupby);
+        $this->group[] = addslashes($groupBy);
         return $this;
     }
     protected function _initGroupSql()
@@ -292,13 +322,13 @@ class SqlCreator
     private $createOrder = false;
 
     /**
-     * @param string $orderby name asc id,create_time desc
+     * @param string $orderBy name asc id,create_time desc
      * @return $this
      */
-    public function OrderBy($orderby)
+    public function OrderBy($orderBy)
     {
         $this->createOrder = true;
-        $this->order[] = addslashes($orderby);
+        $this->order[] = addslashes($orderBy);
         return $this;
     }
 
@@ -349,7 +379,7 @@ class SqlCreator
      * 生成InsertSql Params 必须必须有值
      * @param array $params
      */
-    protected function CreateInsterSql($params)
+    protected function CreateInsertSql($params)
     {
         if(($len = count($params)) > 0){
             $this->bindValues = [];
@@ -415,7 +445,7 @@ class SqlCreator
      */
     public function getInsertSql($params)
     {
-        $this->CreateInsterSql($params);
+        $this->CreateInsertSql($params);
         return $this->CreateRealSql();
     }
 

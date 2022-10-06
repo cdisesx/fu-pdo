@@ -8,6 +8,8 @@
 
 namespace FuPdo\driver;
 
+use PDO;
+use Exception;
 
 class Connect
 {
@@ -38,7 +40,7 @@ class Connect
      *
     //        [
     //            "default"=>[
-    //                'read'=>\PDO,
+    //                'read'=>PDO,
     //                'write'=>null,
     //            ]
     //        ];
@@ -75,8 +77,9 @@ class Connect
     }
 
     /**
-     * @return \PDO
-     * @throws \Exception
+     * @param $witchDB
+     * @return PDO
+     * @throws Exception
      */
     public static function GetWriteDB($witchDB)
     {
@@ -84,8 +87,9 @@ class Connect
     }
 
     /**
-     * @return \PDO
-     * @throws \Exception
+     * @param $witchDB
+     * @return PDO
+     * @throws Exception
      */
     public static function GetReadDB($witchDB)
     {
@@ -93,9 +97,9 @@ class Connect
     }
 
     /**
+     * @param $witchDB
      * @param $readOrWrite
-     * @return \PDO
-     * @throws \Exception
+     * @return PDO
      */
     private function getDb($witchDB, $readOrWrite)
     {
@@ -103,7 +107,7 @@ class Connect
         if (isset($this->db_list[$witchDB]) && isset($this->db_list[$witchDB][$readOrWrite])){
             $db =  $this->db_list[$witchDB][$readOrWrite];
         };
-        if(!($db instanceof \PDO)){
+        if(!($db instanceof PDO)){
             $this->initCurrentConfig($witchDB, $readOrWrite);
 
             $callFunName = "get{$this->dbType}Dsn";
@@ -113,7 +117,7 @@ class Connect
             $options = $this->$callFunName();
 
             $db = self::connentDB($dns, $this->user, $this->password, $options);
-            $db->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+            $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             $this->db_list[$witchDB][$readOrWrite] = $db;
         }
 
@@ -127,15 +131,15 @@ class Connect
      * @param $user
      * @param $password
      * @param $options
-     * @return \PDO
+     * @return PDO
      */
     private static function connectDB($dsn, $user, $password, $options)
     {
         try
         {
-            return new \PDO($dsn, $user, $password, $options);
+            return new PDO($dsn, $user, $password, $options);
         }
-        catch (\Exception $e){
+        catch (Exception $e){
             throw $e;
         }
     }
@@ -156,7 +160,7 @@ class Connect
     {
         $options = array();
         if(isset($this->dbOptions['attrInitCommand'])){
-            $options[\PDO::MYSQL_ATTR_INIT_COMMAND] = $this->dbOptions['attrInitCommand'];
+            $options[PDO::MYSQL_ATTR_INIT_COMMAND] = $this->dbOptions['attrInitCommand'];
         }
         return $options;
     }

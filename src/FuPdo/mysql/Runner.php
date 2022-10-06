@@ -9,6 +9,8 @@
 namespace FuPdo\mysql;
 
 
+use PDO;
+use Exception;
 use FuPdo\driver\Connect;
 
 class Runner
@@ -99,7 +101,7 @@ class Runner
     }
 
     /**
-     * @var \PDO
+     * @var PDO
      */
     protected $db;
 
@@ -127,7 +129,7 @@ class Runner
 
     /**
      * @return int|mixed|null|string
-     * @throws \Exception
+     * @throws Exception
      */
     public function Run()
     {
@@ -135,52 +137,52 @@ class Runner
             $this->connectDb();
             $result = $this->getResult();
             return $result;
-        }catch (\Exception $e){
+        }catch (Exception $e){
             throw $e;
         }
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     public function Begin()
     {
         try{
             $this->connectDb();
             $this->db->beginTransaction();
-        }catch (\Exception $e){
+        }catch (Exception $e){
             throw $e;
         }
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     public function Commit()
     {
         try{
             $this->connectDb();
             $this->db->commit();
-        }catch (\Exception $e){
+        }catch (Exception $e){
             throw $e;
         }
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     public function RollBack()
     {
         try{
             $this->connectDb();
             $this->db->rollBack();
-        }catch (\Exception $e){
+        }catch (Exception $e){
             throw $e;
         }
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     private function connectDb()
     {
@@ -193,7 +195,7 @@ class Runner
 
     /**
      * @return int|mixed|null|string
-     * @throws \Exception
+     * @throws Exception
      */
     private function getResult()
     {
@@ -206,19 +208,19 @@ class Runner
                     return $sth->fetchColumn();
                     break;
                 case self::ReturnOneRow:
-                    $sth->setFetchMode(\PDO::FETCH_ASSOC);
+                    $sth->setFetchMode(PDO::FETCH_ASSOC);
                     return $sth->fetch();
                     break;
                 case self::ReturnOneObjRow:
-                    $sth->setFetchMode(\PDO::FETCH_OBJ);
+                    $sth->setFetchMode(PDO::FETCH_OBJ);
                     return $sth->fetch();
                     break;
                 case self::ReturnArray:
-                    $sth->setFetchMode(\PDO::FETCH_ASSOC);
+                    $sth->setFetchMode(PDO::FETCH_ASSOC);
                     return $sth->fetchAll();
                     break;
                 case self::ReturnObj:
-                    $sth->setFetchMode(\PDO::FETCH_OBJ);
+                    $sth->setFetchMode(PDO::FETCH_OBJ);
                     return $sth->fetchAll();
                     break;
                 case self::ReturnEffectRow:
@@ -237,7 +239,7 @@ class Runner
                 default:
                     return null;
             }
-        }catch (\Exception $e){
+        }catch (Exception $e){
             throw $e;
         }
     }
