@@ -58,14 +58,14 @@ $config = [
 ```
 - It has own config class. Use initConf to set config before query or exec
 ```shell
- \FuPdo\driver\Conf::InitConf($config);
+ \fuPdo\driver\Conf::InitConf($config);
 ```
 
 Extend Model 
 ---
 
 ```shell
-use FuPdo\mysql\Model;
+use fuPdo\mysql\Model;
 class UserModel extends Model
 {
     public static $TABLE = 'user';

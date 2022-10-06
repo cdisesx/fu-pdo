@@ -21,7 +21,7 @@ require './Controller/User.php';
 require './Model/User.php';
 require './Helper.php';
 
-\FuPdo\driver\Conf::InitConf($config);
+\fuPdo\driver\Conf::InitConf($config);
 
 $controller = new \test\Controller\UserController();
 

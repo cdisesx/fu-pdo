@@ -1,6 +1,6 @@
 <?php
 
-namespace FuPdo\driver;
+namespace fuPdo\driver;
 
 use PDO;
 use Exception;

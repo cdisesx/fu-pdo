@@ -1,6 +1,6 @@
 <?php
 
-namespace FuPdo\mysql;
+namespace fuPdo\mysql;
 
 class Builder extends SqlCreator
 {

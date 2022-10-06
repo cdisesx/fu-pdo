@@ -1,7 +1,7 @@
 <?php
 namespace test\Model;
 
-use FuPdo\mysql\Model;
+use fuPdo\mysql\Model;
 
 class UserModel extends Model
 {

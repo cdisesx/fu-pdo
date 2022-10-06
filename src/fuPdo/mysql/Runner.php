@@ -1,11 +1,11 @@
 <?php
 
-namespace FuPdo\mysql;
+namespace fuPdo\mysql;
 
 
 use PDO;
 use Exception;
-use FuPdo\driver\Connect;
+use fuPdo\driver\Connect;
 
 class Runner
 {

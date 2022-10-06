@@ -1,6 +1,6 @@
 <?php
 
-namespace FuPdo\mysql;
+namespace fuPdo\mysql;
 
 // 加入批量Insert
 // 加入Update

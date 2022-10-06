@@ -12,6 +12,6 @@
         "ext-pdo": "*"
     },
     "autoload": {
-        "psr-4": {"FuPdo\\": "src/FuPdo"}
+        "psr-4": {"fuPdo\\": "src/fuPdo"}
     }
 }
