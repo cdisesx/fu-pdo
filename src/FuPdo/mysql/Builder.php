@@ -178,7 +178,7 @@ class Builder extends SqlCreator
      */
     public function Insert($params)
     {
-        $this->CreateInserSql($params);
+        $this->CreateInsterSql($params);
         return $this->getData(Runner::RunExec, Runner::ReturnLastInertID);
     }
 

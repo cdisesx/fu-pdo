@@ -349,7 +349,7 @@ class SqlCreator
      * 生成InsertSql Params 必须必须有值
      * @param array $params
      */
-    protected function CreateInserSql($params)
+    protected function CreateInsterSql($params)
     {
         if(($len = count($params)) > 0){
             $this->bindValues = [];
@@ -415,7 +415,7 @@ class SqlCreator
      */
     public function getInsertSql($params)
     {
-        $this->CreateInserSql($params);
+        $this->CreateInsterSql($params);
         return $this->CreateRealSql();
     }
 
