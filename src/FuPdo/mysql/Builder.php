@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: xiaofu
- * Date: 2018/5/14
- * Time: 09:54
- */
 
 namespace FuPdo\mysql;
 

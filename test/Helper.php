@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: VIP
- * Date: 2017/11/21
- * Time: 18:30
- */
 
 function p($data, $is_die=1){
     echo '<pre>';

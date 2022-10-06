@@ -1,9 +1,6 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: xiaofu
- * Date: 2018/5/20
- * Time: 02:06
+ * @param $class
  */
 
 function classLoader($class)
