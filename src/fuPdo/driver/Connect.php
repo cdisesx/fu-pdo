@@ -94,6 +94,7 @@ class Connect
      * @param $witchDB
      * @param $readOrWrite
      * @return PDO
+     * @throws Exception
      */
     private function getDb($witchDB, $readOrWrite)
     {
@@ -110,7 +111,7 @@ class Connect
             $callFunName = "get{$this->dbType}Options";
             $options = $this->$callFunName();
 
-            $db = self::connentDB($dns, $this->user, $this->password, $options);
+            $db = self::connectDB($dns, $this->user, $this->password, $options);
             $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             $this->db_list[$witchDB][$readOrWrite] = $db;
         }
@@ -120,7 +121,7 @@ class Connect
 
 
     /**
-     * Create ConnentDB
+     * Create ConnectDB
      * @param $dsn
      * @param $user
      * @param $password
