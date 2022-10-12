@@ -10,11 +10,12 @@ class Builder extends SqlCreator
      * @param $table
      * @return Builder
      */
-    public static function getInstance($db, $table)
+    public static function getInstance($db, $table, $saveFileds)
     {
         $builder = new self();
         $builder->db = $db;
         $builder->Table($table);
+        $builder->SetSaveFields($saveFileds);
         return $builder;
     }
 
@@ -35,46 +36,9 @@ class Builder extends SqlCreator
     }
 
     /**
-     * @var int
+     * @var Error
      */
-    private $error_code = 0;
-
-    /**
-     * @return int
-     */
-    public function getErrorCode()
-    {
-        return $this->error_code;
-    }
-
-    /**
-     * @param int $error_code
-     */
-    public function setErrorCode($error_code)
-    {
-        $this->error_code = $error_code;
-    }
-
-    /**
-     * @var string
-     */
-    private $error_message = '';
-
-    /**
-     * @return string
-     */
-    public function getErrorMessage()
-    {
-        return $this->error_message;
-    }
-
-    /**
-     * @param string $error_message
-     */
-    public function setErrorMessage($error_message)
-    {
-        $this->error_message = $error_message;
-    }
+    private $error = null;
 
     /**
      * @return int|mixed|null|string
@@ -167,6 +131,27 @@ class Builder extends SqlCreator
     }
 
     /**
+     * @param $runType
+     * @param $returnType
+     * @return int|mixed|null|string
+     */
+    private function getData($runType, $returnType)
+    {
+        $data = null;
+        try{
+            $data = $this->getRunner()
+                ->setRunType($runType)
+                ->setReturnType($returnType)
+                ->setSql($this->sql)
+                ->setBindValues($this->bindValues)
+                ->Run();
+        }catch (\Exception $e){
+            $this->error = New Error($e);
+        }
+        return $data;
+    }
+
+    /**
      * @param $params
      * @return int|mixed|null|string
      */
@@ -187,28 +172,6 @@ class Builder extends SqlCreator
     }
 
     /**
-     * @param $runType
-     * @param $returnType
-     * @return int|mixed|null|string
-     */
-    private function getData($runType, $returnType)
-    {
-        $data = null;
-        try{
-            $data = $this->getRunner()
-                ->setRunType($runType)
-                ->setReturnType($returnType)
-                ->setSql($this->sql)
-                ->setBindValues($this->bindValues)
-                ->Run();
-        }catch (\Exception $e){
-            $this->error_code = $e->getCode();
-            $this->error_message= $e->getMessage();
-        }
-        return $data;
-    }
-
-    /**
      * @return $this
      */
     public function Begin()
@@ -217,8 +180,7 @@ class Builder extends SqlCreator
             $this->getRunner()->setRunType(Runner::RunExec)->Begin();
             return $this;
         }catch (\Exception $e){
-            $this->error_code = $e->getCode();
-            $this->error_message= $e->getMessage();
+            $this->error = New Error($e);
         }
     }
 
@@ -231,8 +193,7 @@ class Builder extends SqlCreator
             $this->getRunner()->setRunType(Runner::RunExec)->Commit();
             return $this;
         }catch (\Exception $e){
-            $this->error_code = $e->getCode();
-            $this->error_message= $e->getMessage();
+            $this->error = New Error($e);
         }
     }
 
@@ -245,8 +206,7 @@ class Builder extends SqlCreator
             $this->getRunner()->setRunType(Runner::RunExec)->RollBack();
             return $this;
         }catch (\Exception $e){
-            $this->error_code = $e->getCode();
-            $this->error_message= $e->getMessage();
+            $this->error = New Error($e);
         }
     }
 

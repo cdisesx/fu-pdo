@@ -1,12 +1,12 @@
 # Fu-PDO
 Package PHP-PDO 
--  Table、Field、Where、LeftJoin、RightJoin、InnerJoin、
-    Page、Count、Group、Order
--  Select、Find、One
--  Insert、Update
--  Begin、RollBack、Commit
--  Query、Exec
--  getSelectSql、getUpdateSql、getInsertSql、getErrorMessage、getErrorCode
+-  Table, Field, Where, LeftJoin, RightJoin, InnerJoin, 
+    Page, Count, Group, Order
+-  Select, Find, One
+-  Insert, Update
+-  Begin, RollBack, Commit
+-  Query, Exec
+-  getSelectSql, getUpdateSql, getInsertSql, getErrorMessage, getErrorCode
 
 
 

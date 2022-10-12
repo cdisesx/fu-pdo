@@ -5,6 +5,12 @@ use fuPdo\mysql\Model;
 
 class UserModel extends Model
 {
-    public static $TABLE = 'user';
-    public static $DB = 'club';
+    public static $Table = 'user';
+    public static $Db = 'club';
+
+    public static $SaveFields = [
+        "user_id",
+        "name",
+        "update_at",
+    ];
 }
