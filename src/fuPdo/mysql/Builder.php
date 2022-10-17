@@ -118,7 +118,7 @@ class Builder extends SqlCreator
     public function One()
     {
         $this->CreateSelectSql();
-        return $this->getData(Runner::RunQuery, Runner::ReturnOneField);
+        return $this->getData(Runner::RunQuery, Runner::ReturnOneRow);
     }
 
     /**

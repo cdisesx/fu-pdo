@@ -20,4 +20,10 @@ class Model
         return Builder::getInstance($Class::$Db, $Class::$Table, $Class::$SaveFields);
     }
 
+    public static function GetSaveFields()
+    {
+        $Class = get_called_class();
+        return $Class::$SaveFields;
+    }
+
 }

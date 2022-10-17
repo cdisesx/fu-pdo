@@ -161,6 +161,86 @@ class SqlCreator
         return $this;
     }
 
+    public function WhereFields($params)
+    {
+        foreach ($params as $field=>$param) {
+            if(!is_string($field)){
+                if(is_string($params)){
+                    $this->Where($param);
+                }
+                continue;
+            }
+
+            if(is_string($param)){
+                $this->WhereAssign($field, "=", $param);
+            }
+
+            if(is_array($param)){
+                $paramLen = count($param);
+                if ($paramLen == 1){
+                    $this->WhereAssign($field, "=", $param[0]);
+                }elseif ($paramLen > 1){
+                    $this->WhereAssign($field, $params[0], $param[1]);
+                }
+            }
+        }
+        return $this;
+    }
+
+    protected static $allowAssign = [
+        "=",">","<","<=",">=","!=",
+    ];
+
+    protected static $allowMutlAssign = [
+        "in","not int"
+    ];
+
+    /**
+     * @param $field
+     * @param array $params
+     * @return $this
+     */
+    public function WhereAssign($field,string $assign, $params)
+    {
+        if(empty($params)){
+            $this->emptyReturn = true;
+            return $this;
+        }
+
+        $assign = strtolower(trim(addslashes($assign)));
+        $hasAllowAssign = false;
+        if(in_array($assign, self::$allowAssign)){
+            $hasAllowAssign = true;
+            $this->where("{$field} {$assign} ?", $params);
+        }
+
+        if(in_array($assign, self::$allowMutlAssign)){
+            $hasAllowAssign = true;
+            if(!is_array($params)){
+                $params = [$params];
+            }
+
+            if(count($params) == 1){
+                switch ($assign){
+                    case "in":
+                        $this->where("{$field} = ?", $params[0]);
+                        break;
+                    case "not in":
+                        $this->where("{$field} != ?", $params[0]);
+                        break;
+                }
+            }else{
+                $ps = $this->GetPsSql($params);
+                $this->where("{$field} {$assign} ($ps)", $params);
+            }
+        }
+
+        if(!$hasAllowAssign){
+            $this->emptyReturn = true;
+        }
+        return $this;
+    }
+
     /**
      * @param $field
      * @param array $params
@@ -168,22 +248,21 @@ class SqlCreator
      */
     public function WhereIn($field, $params = [])
     {
+        return $this->WhereAssign($field, "in", $params);
+    }
+
+    public function GetPsSql($params)
+    {
+        $pS = [];
         if(!is_array($params)){
-            $this->where("$field = ?", $params);
+            return '?';
         }
+
         $paramsLen = count($params);
-        if($paramsLen == 0){
-            $this->emptyReturn = true;
-        }else if($paramsLen == 1){
-            $this->where("$field = ?", $params[0]);
-        }else{
-            $pS = [];
-            for($i=0;$i<$paramsLen;$i++){
-                $pS[] = '?';
-            }
-            $this->where("$field = (". join($pS, ",") . ")", $params);
+        for($i=0;$i<$paramsLen;$i++){
+            $pS[] = '?';
         }
-        return $this;
+        return join($pS, ",");
     }
 
     protected function _initWhereSql()
