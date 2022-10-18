@@ -4,10 +4,11 @@ namespace fuPdo\mysql;
 
 // 加入批量Insert
 // 加入Update
-// 日志
 
 class SqlCreator
 {
+    use Log;
+
     /**
      * @var string 准备连接的库名
      */
@@ -30,6 +31,46 @@ class SqlCreator
     public function SetSaveFields($saveFields)
     {
         $this->saveFields = $saveFields;
+        return $this;
+    }
+
+    /**
+     * @var bool | string
+     */
+    protected $createField = false;
+    /**
+     * @return $this
+     */
+    public function SetCreateField($createField)
+    {
+        $this->createField = $createField;
+        return $this;
+    }
+
+    /**
+     * @var bool | string
+     */
+    protected $updateField = false;
+    /**
+     * @return $this
+     */
+    public function SetUpdateField($updateField)
+    {
+        $this->updateField = $updateField;
+        return $this;
+    }
+
+
+    /**
+     * @var string
+     */
+    protected $timeFormat = "Y-m-d H:i:s";
+    /**
+     * @return $this
+     */
+    public function SetTimeFormat($timeFormat)
+    {
+        $this->timeFormat = $timeFormat;
         return $this;
     }
 
@@ -489,6 +530,14 @@ class SqlCreator
     {
         $params = $this->FilterSaveFields($params);
         if(($len = count($params)) > 0){
+            if($this->createField){
+                $params[$this->createField] = date($this->timeFormat);
+                $len++;
+            }
+            if($this->updateField){
+                $params[$this->updateField] = date($this->timeFormat);
+                $len++;
+            }
             $this->bindValues = [];
             $bindValues = array_values($params);
             $this->field = [];
@@ -517,6 +566,11 @@ class SqlCreator
     {
         $params = $this->FilterSaveFields($params);
         if(count($this->where) > 0 && ($len = count($params)) > 0){
+            if($this->updateField){
+                $params[$this->updateField] = date($this->timeFormat);
+                $len++;
+            }
+
             $this->bindValues = [];
             $bindValues = array_values($params);
             $this->addBindValues($bindValues, $len);

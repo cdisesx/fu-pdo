@@ -10,12 +10,11 @@ class Builder extends SqlCreator
      * @param $table
      * @return Builder
      */
-    public static function getInstance($db, $table, $saveFileds)
+    public static function getInstance($db, $table)
     {
         $builder = new self();
         $builder->db = $db;
         $builder->Table($table);
-        $builder->SetSaveFields($saveFileds);
         return $builder;
     }
 
@@ -158,6 +157,7 @@ class Builder extends SqlCreator
     public function Insert($params)
     {
         $this->CreateInsertSql($params);
+        $this->PushLog($this->CreateRealSql());
         return $this->getData(Runner::RunExec, Runner::ReturnLastInertID);
     }
 
@@ -168,6 +168,7 @@ class Builder extends SqlCreator
     public function Update($params)
     {
         $this->CreateUpdateSql($params);
+        $this->PushLog($this->CreateRealSql());
         return $this->getData(Runner::RunExec, Runner::ReturnRunResult);
     }
 

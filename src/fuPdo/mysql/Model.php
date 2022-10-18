@@ -12,12 +12,22 @@ class Model
      */
     public static $SaveFields = true;
 
+    protected static $CreateField = 'create_at';
+    protected static $UpdateField = 'update_at';
+    protected static $timeFormat = 'Y-m-d H:i:s';
+
     public function __construct(){}
 
     public static function Builder()
     {
         $Class = get_called_class();
-        return Builder::getInstance($Class::$Db, $Class::$Table, $Class::$SaveFields);
+        $builder = Builder::getInstance($Class::$Db, $Class::$Table);
+
+        $builder->SetSaveFields($Class::$SaveFields);
+        $builder->SetCreateField($Class::$CreateField);
+        $builder->SetUpdateField($Class::$UpdateField);
+        $builder->SetTimeFormat($Class::$timeFormat);
+        return $builder;
     }
 
     public static function GetSaveFields()
@@ -25,5 +35,4 @@ class Model
         $Class = get_called_class();
         return $Class::$SaveFields;
     }
-
 }
