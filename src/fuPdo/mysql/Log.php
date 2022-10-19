@@ -17,10 +17,10 @@ trait Log
         $this->log = $log;
     }
 
-    public function PushLog($content)
+    public function pushLog($content)
     {
         if($this->log){
-            $this->log->Push($content);
+            $this->log->push($content);
         }
     }
 
