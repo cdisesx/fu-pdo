@@ -3,10 +3,10 @@ namespace fuPdo\mysql;
 
 class Where
 {
-    private $where = [];
-    private $createWhere = false;
-    private $whereOr = [];
-    private $createWhereOr = false;
+    private $and = [];
+    private $createAnd = false;
+    private $or = [];
+    private $createOr = false;
     private $emptyWhere = true;
 
     /**
@@ -22,6 +22,7 @@ class Where
     /**
      * @param $sql
      * @param array|max $bindParams
+     * @param string $logic
      * @return $this
      */
     public function where($sql, $bindParams = [], $logic = "and")
@@ -37,15 +38,15 @@ class Where
         $logic = strtolower($logic);
         switch ($logic){
             case "and":
-                $this->createWhere = true;
-                $this->where[] = [
+                $this->createAnd = true;
+                $this->and[] = [
                     'sql'=>$sql,
                     'bind'=>$bindParams
                 ];
                 break;
             case "or":
-                $this->createWhereOr = true;
-                $this->whereOr[] = [
+                $this->createOr = true;
+                $this->or[] = [
                     'sql'=>$sql,
                     'bind'=>$bindParams
                 ];
@@ -62,11 +63,11 @@ class Where
 
     public function getSqlBind()
     {
-        if ($this->createWhere){
-            $this->mergeOrWhereSql();
-            $this->sqlBind->setSql('(' . join(') AND (', array_column($this->where, 'sql')) . ')');
+        $this->mergeOrWhereSql();
+        if ($this->createAnd){
+            $this->sqlBind->setSql('(' . join(') AND (', array_column($this->and, 'sql')) . ')');
             $this->sqlBind->setBindValues([]);
-            foreach ($this->where as $item) {
+            foreach ($this->and as $item) {
                 $this->sqlBind->addBindValues($item['bind'], substr_count($item['sql'], '?'));
             }
         }
@@ -76,17 +77,145 @@ class Where
 
     protected function mergeOrWhereSql()
     {
-        if ($this->createWhereOr){
-            $sql = '(' . join(') OR (', array_column($this->whereOr, 'sql')) . ')';
+        if ($this->createOr){
+            $sql = '(' . join(') OR (', array_column($this->or, 'sql')) . ')';
             $bindValues = [];
-            foreach ($this->whereOr as $item) {
+            foreach ($this->or as $item) {
                 $bindValues = array_merge($bindValues, $item['bind']);
             }
             $this->where($sql, $bindValues);
-            $this->createWhereOr = false;
-            $this->whereOr = [];
+            $this->createOr = false;
+            $this->or = [];
         }
         return $this;
     }
 
+    public function mergeWhere(Where $where)
+    {
+        foreach ($where->and as $and) {
+            $this->where($and['sql'], $and['bind']);
+        }
+        return $this;
+    }
+
+    public function mergeWhereOr(Where $where)
+    {
+        $mergeBind = $where->getSqlBind();
+        $this->where($mergeBind->getSql(), $mergeBind->getBindValues(), 'or');
+        return $this;
+    }
+
+    protected static $allowAssign = [
+        "=",">","<","<=",">=","!=",
+    ];
+
+    protected static $allowMultiAssign = [
+        "in","not int"
+    ];
+
+    protected static $allowSpecialAssign = [
+        "keyword",
+    ];
+
+    /**
+     * @param $field
+     * @param string $assign
+     * @param $params
+     * @return Where | bool
+     */
+    public static function NewAssignWhere($field, string $assign, $params)
+    {
+        if(empty($params)){
+            return false;
+        }
+        $newWhere = new self();
+
+        $assign = strtolower(trim(addslashes($assign)));
+        $hasAllowAssign = false;
+        if(in_array($assign, self::$allowAssign)){
+            $hasAllowAssign = true;
+            $newWhere->where("{$field} {$assign} ?", $params);
+        }
+
+        if(in_array($assign, self::$allowMultiAssign)){
+            $hasAllowAssign = true;
+            if(!is_array($params)){
+                $params = [$params];
+            }
+
+            if(count($params) == 1){
+                switch ($assign){
+                    case "in":
+                        $newWhere->where("{$field} = ?", $params[0]);
+                        break;
+                    case "not in":
+                        $newWhere->where("{$field} != ?", $params[0]);
+                        break;
+                }
+            }else{
+                $ps = SqlCreator::GetPsSql($params);
+                $newWhere->where("{$field} {$assign} ($ps)", $params);
+            }
+        }
+
+        if(in_array($assign, self::$allowSpecialAssign)) {
+            $hasAllowAssign = true;
+
+            switch ($assign){
+                case "keyword":
+                    $fieldList = explode(',', $field);
+                    $keywordField = $fieldList[0];
+                    $idField = $fieldList[1] ?? '';
+                    if(is_array($params)){
+                        $params = join(' ', $params);
+                    }
+                    $whereKeyword = self::NewKeywordWhere($keywordField, $idField, $params);
+                    if($whereKeyword === false){
+                        return false;
+                    }
+                    $newWhere->mergeWhere($whereKeyword);
+            }
+        }
+
+        if(!$hasAllowAssign){
+            return false;
+        }
+
+        return $newWhere;
+    }
+
+    public static function NewKeywordWhere($keywordField, $idField, $word)
+    {
+        if(!is_array($word)){
+            return false;
+        }
+
+        $searchWords = explode(' ', strval($word));
+        foreach ($searchWords as $k=>$searchWord) {
+            $searchWord = trim($searchWord);
+            if($searchWord === ''){
+                unset($searchWords[$k]);
+            }
+        }
+        if(empty($searchWords)){
+            return false;
+        }
+
+        $newWhere = new self();
+        foreach ($searchWords as $searchWord) {
+            $newWhere->where("{$keywordField} like %?%", $searchWord, 'and');
+
+            if(empty($idField)){
+                continue;
+            }
+            $betweenKeyword = explode('~', $searchWord);
+            if(count($betweenKeyword) == 2){
+                $newWhere->where("{$idField} between ? and ?", $betweenKeyword, 'or');
+            }else{
+                $newWhere->where("{$idField} = ?", $searchWord, 'or');
+            }
+        }
+
+        return $newWhere;
+    }
 }

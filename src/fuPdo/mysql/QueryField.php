@@ -14,6 +14,7 @@ class QueryField
      * @param $params
      * @param $rules
      * @param Error $error
+     * @return array|false
      */
     public static function GetParams($params, $rules,Error &$error)
     {

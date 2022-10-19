@@ -74,9 +74,11 @@ class SqlBind
             }
         }
     }
+
     /**
-     * @param $bindValues
-     * @param $num
+     * @param SqlBind $bind
+     * @param string $sqlSub
+     * @return SqlBind
      */
     public function mergeBind(sqlBind $bind, $sqlSub = " ")
     {

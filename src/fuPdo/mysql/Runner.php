@@ -1,7 +1,5 @@
 <?php
-
 namespace fuPdo\mysql;
-
 
 use PDO;
 use Exception;
