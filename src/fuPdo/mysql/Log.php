@@ -12,7 +12,7 @@ trait Log
      */
     private $log = null;
 
-    public function SetLog($log)
+    public function setLog($log)
     {
         $this->log = $log;
     }

@@ -49,7 +49,7 @@ class FileLog implements Base
         return $file;
     }
 
-    public function Push($content)
+    public function push($content)
     {
         $file = $this->getFile();
         if(!$file){

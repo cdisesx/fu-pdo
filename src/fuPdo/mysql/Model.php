@@ -23,7 +23,7 @@ class Model
         $Class = get_called_class();
         $builder = Builder::getInstance($Class::$Db, $Class::$Table);
 
-        $builder->SetSaveFields($Class::$SaveFields);
+        $builder->setSaveFields($Class::$SaveFields);
         $builder->SetCreateField($Class::$CreateField);
         $builder->SetUpdateField($Class::$UpdateField);
         $builder->SetTimeFormat($Class::$timeFormat);

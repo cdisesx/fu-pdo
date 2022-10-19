@@ -2,5 +2,5 @@
 namespace fuPdo\log;
 
 interface Base {
-    public function Push($content);
+    public function push($content);
 }

@@ -125,7 +125,7 @@ class Runner
      * @return int|mixed|null|string
      * @throws Exception
      */
-    public function Run()
+    public function run()
     {
         try{
             $this->connectDb();
@@ -139,7 +139,7 @@ class Runner
     /**
      * @throws Exception
      */
-    public function Begin()
+    public function begin()
     {
         try{
             $this->connectDb();
@@ -152,7 +152,7 @@ class Runner
     /**
      * @throws Exception
      */
-    public function Commit()
+    public function commit()
     {
         try{
             $this->connectDb();
@@ -165,7 +165,7 @@ class Runner
     /**
      * @throws Exception
      */
-    public function RollBack()
+    public function rollBack()
     {
         try{
             $this->connectDb();

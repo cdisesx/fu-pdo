@@ -42,7 +42,7 @@ class Builder extends SqlCreator
     /**
      * @return int|mixed|null|string
      */
-    public function Find()
+    public function find()
     {
         $this->CreateSelectSql();
         return $this->getData(Runner::RunQuery, Runner::ReturnOneRow);
@@ -51,7 +51,7 @@ class Builder extends SqlCreator
     /**
      * @return int|mixed|null|string
      */
-    public function FindAsObj()
+    public function findAsObj()
     {
         $this->CreateSelectSql();
         return $this->getData(Runner::RunQuery, Runner::ReturnOneObjRow);
@@ -60,7 +60,7 @@ class Builder extends SqlCreator
     /**
      * @return int|mixed|null|string
      */
-    public function Select()
+    public function select()
     {
         $this->CreateSelectSql();
         return $this->getData(Runner::RunQuery, Runner::ReturnArray);
@@ -71,10 +71,10 @@ class Builder extends SqlCreator
      * @param array $params
      * @return $this
      */
-    public function Sql($sql, $params = [])
+    public function sql($sql, $params = [])
     {
-        $this->setSql($sql);
-        $this->setBindValues($params);
+        $this->getSqlBind()->setSql($sql);
+        $this->getSqlBind()->setBindValues($params);
         return $this;
     }
 
@@ -83,10 +83,10 @@ class Builder extends SqlCreator
      * @param $params
      * @return int|mixed|null|string
      */
-    public function Query($sql, $params = [])
+    public function query($sql, $params = [])
     {
-        $this->setSql($sql);
-        $this->setBindValues($params);
+        $this->getSqlBind()->setSql($sql);
+        $this->getSqlBind()->setBindValues($params);
         return $this->getData(Runner::RunQuery, Runner::ReturnArray);
     }
 
@@ -95,37 +95,37 @@ class Builder extends SqlCreator
      * @param $params
      * @return int|mixed|null|string
      */
-    public function Exec($sql, $params = [])
+    public function exec($sql, $params = [])
     {
-        $this->setSql($sql);
-        $this->setBindValues($params);
+        $this->getSqlBind()->setSql($sql);
+        $this->getSqlBind()->setBindValues($params);
         return $this->getData(Runner::RunExec, Runner::ReturnArray);
     }
 
     /**
      * @return int|mixed|null|string
      */
-    public function SelectAsObj()
+    public function selectAsObj()
     {
-        $this->CreateSelectSql();
+        $this->createSelectSql();
         return $this->getData(Runner::RunQuery, Runner::ReturnObj);
     }
 
     /**
      * @return int|mixed|null|string
      */
-    public function One()
+    public function one()
     {
-        $this->CreateSelectSql();
+        $this->createSelectSql();
         return $this->getData(Runner::RunQuery, Runner::ReturnOneRow);
     }
 
     /**
      * @return int|mixed|null|string
      */
-    public function Count()
+    public function count()
     {
-        $this->CreateCountSql();
+        $this->createCountSql();
         return $this->getData(Runner::RunQuery, Runner::ReturnOneField);
     }
 
@@ -141,9 +141,9 @@ class Builder extends SqlCreator
             $data = $this->getRunner()
                 ->setRunType($runType)
                 ->setReturnType($returnType)
-                ->setSql($this->sql)
-                ->setBindValues($this->bindValues)
-                ->Run();
+                ->setSql($this->getSqlBind()->getSql())
+                ->setBindValues($this->getSqlBind()->getBindValues())
+                ->run();
         }catch (\Exception $e){
             $this->error = New Error($e);
         }
@@ -154,10 +154,10 @@ class Builder extends SqlCreator
      * @param $params
      * @return int|mixed|null|string
      */
-    public function Insert($params)
+    public function insert($params)
     {
-        $this->CreateInsertSql($params);
-        $this->PushLog($this->CreateRealSql());
+        $this->createInsertSql($params);
+        $this->pushLog($this-createRealSql());
         return $this->getData(Runner::RunExec, Runner::ReturnLastInertID);
     }
 
@@ -165,20 +165,20 @@ class Builder extends SqlCreator
      * @param $params
      * @return int|mixed|null|string
      */
-    public function Update($params)
+    public function update($params)
     {
-        $this->CreateUpdateSql($params);
-        $this->PushLog($this->CreateRealSql());
+        $this->createUpdateSql($params);
+        $this->pushLog($this->createRealSql());
         return $this->getData(Runner::RunExec, Runner::ReturnRunResult);
     }
 
     /**
      * @return $this
      */
-    public function Begin()
+    public function begin()
     {
         try{
-            $this->getRunner()->setRunType(Runner::RunExec)->Begin();
+            $this->getRunner()->setRunType(Runner::RunExec)->begin();
             return $this;
         }catch (\Exception $e){
             $this->error = New Error($e);
@@ -188,10 +188,10 @@ class Builder extends SqlCreator
     /**
      * @return $this
      */
-    public function Commit()
+    public function commit()
     {
         try{
-            $this->getRunner()->setRunType(Runner::RunExec)->Commit();
+            $this->getRunner()->setRunType(Runner::RunExec)->commit();
             return $this;
         }catch (\Exception $e){
             $this->error = New Error($e);
@@ -201,10 +201,10 @@ class Builder extends SqlCreator
     /**
      * @return $this
      */
-    public function RollBack()
+    public function rollBack()
     {
         try{
-            $this->getRunner()->setRunType(Runner::RunExec)->RollBack();
+            $this->getRunner()->setRunType(Runner::RunExec)->rollBack();
             return $this;
         }catch (\Exception $e){
             $this->error = New Error($e);
