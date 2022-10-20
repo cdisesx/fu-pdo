@@ -37,7 +37,7 @@ class Builder extends SqlCreator
     /**
      * @var Error
      */
-    private $error = null;
+    public $error = null;
 
     /**
      * @param string $field

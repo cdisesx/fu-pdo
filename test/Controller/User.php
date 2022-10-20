@@ -1,5 +1,4 @@
 <?php
-
 namespace test\Controller;
 
 use test\Model\UserModel;
@@ -55,8 +54,8 @@ class UserController
             ->where('lalalala in (?,?,?)', [60,61,62,63]);
 
         $builder->select();
-        var_dump( $builder->getErrorCode() );
-        echo $builder->getErrorMessage();
+        var_dump( $builder->error->getErrorCode() );
+        echo $builder->error->getErrorMessage();
     }
 
     public function getDetail()
