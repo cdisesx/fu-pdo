@@ -28,12 +28,20 @@ class SqlCreator
 
     public function __construct()
     {
-        $this->sqlBind = new SqlBind();
         $this->whereBuilder = new Where();
     }
 
     public function getSqlBind()
     {
+        if($this->sqlBind == null){
+            $this->sqlBind = new SqlBind();
+        }
+        return $this->sqlBind;
+    }
+
+    public function NewSqlBind()
+    {
+        $this->sqlBind = new SqlBind();
         return $this->sqlBind;
     }
 
@@ -46,9 +54,9 @@ class SqlCreator
     protected function _initSelectFieldSql()
     {
         if (count($this->selectField) == 0){
-            $this->sqlBind->addSql(" {$this->table}.*");
+            $this->getSqlBind()->addSql(" {$this->table}.*");
         }else{
-            $this->sqlBind->addSql(join(',', $this->selectField));
+            $this->getSqlBind()->addSql(join(',', $this->selectField));
         }
     }
 
@@ -65,7 +73,7 @@ class SqlCreator
 
     protected function _initTableSql()
     {
-        $this->sqlBind->addSql(' '.$this->table);
+        $this->getSqlBind()->addSql(' '.$this->table);
     }
 
     /**
@@ -104,7 +112,7 @@ class SqlCreator
 
     protected function _initWhereSql()
     {
-        $this->sqlBind->mergeBind($this->whereBuilder->getSqlBind(), ' WHERE ');
+        $this->getSqlBind()->mergeBind($this->whereBuilder->getSqlBind(), ' WHERE ');
     }
 
     /**
@@ -147,8 +155,8 @@ class SqlCreator
         if ($this->createJoin){
             foreach ($this->join as $item) {
                 $bindNum = substr_count($item['table'], '?') + substr_count($item['on'], '?');
-                $this->sqlBind->addBindValues($item['bind'], $bindNum);
-                $this->sqlBind->addSql(" {$item['type']} {$item['table']} ON {$item['on']}");
+                $this->getSqlBind()->addBindValues($item['bind'], $bindNum);
+                $this->getSqlBind()->addSql(" {$item['type']} {$item['table']} ON {$item['on']}");
             }
         }
     }
@@ -172,7 +180,7 @@ class SqlCreator
     protected function _initGroupSql()
     {
         if ($this->createGroup){
-            $this->sqlBind->addSql(' GROUP BY ' . join(',', $this->group));
+            $this->getSqlBind()->addSql(' GROUP BY ' . join(',', $this->group));
         }
     }
 
@@ -198,7 +206,7 @@ class SqlCreator
     protected function _initLimitSql()
     {
         if ($this->createLimit){
-            $this->sqlBind->addSql(" LIMIT {$this->offset},{$this->limit}");
+            $this->getSqlBind()->addSql(" LIMIT {$this->offset},{$this->limit}");
         }
     }
 
@@ -222,7 +230,7 @@ class SqlCreator
     protected function _initOrderSql()
     {
         if ($this->createOrder){
-            $this->sqlBind->addSql(' ORDER BY ' . join(',', $this->order));
+            $this->getSqlBind()->addSql(' ORDER BY ' . join(',', $this->order));
         }
     }
 
@@ -277,16 +285,15 @@ class SqlCreator
                 $params[$this->updateField] = date($this->timeFormat);
             }
 
-            $this->sqlBind = new SqlBind();
-            $this->sqlBind->setSql('INSERT INTO ');
+            $this->NewSqlBind()->setSql('INSERT INTO ');
             $this->_initTableSql();
 
             $insertFields = array_keys($params);
-            $this->sqlBind->addSql(' ('. join(',', $insertFields).')');
-            $this->sqlBind->addSql('VALUES ('. SqlBind::GetMarks($params).')');
+            $this->getSqlBind()->addSql(' ('. join(',', $insertFields).')');
+            $this->getSqlBind()->addSql('VALUES ('. SqlBind::GetMarks($params).')');
 
             $bindValues = array_values($params);
-            $this->sqlBind->addBindValues($bindValues);
+            $this->getSqlBind()->addBindValues($bindValues);
         }
     }
 
@@ -302,10 +309,9 @@ class SqlCreator
                 $params[$this->updateField] = date($this->timeFormat);
             }
 
-            $this->sqlBind = new SqlBind();
-            $this->sqlBind->setSql('UPDATE ');
+            $this->NewSqlBind()->setSql('UPDATE ');
             $this->_initTableSql();
-            $this->sqlBind->addSql(' SET ');
+            $this->getSqlBind()->addSql(' SET ');
 
             $updateSql = [];
             $bindValues = [];
@@ -313,8 +319,8 @@ class SqlCreator
                 $updateSql[] = "{$field} = ?";
                 $bindValues[] = $v;
             }
-            $this->sqlBind->addSql(join(',', $updateSql));
-            $this->sqlBind->addBindValues($bindValues);
+            $this->getSqlBind()->addSql(join(',', $updateSql));
+            $this->getSqlBind()->addBindValues($bindValues);
             $this->_initWhereSql();
         }
     }
@@ -359,7 +365,7 @@ class SqlCreator
 
         $i = 1;
         $lenArr = count($sqlArr);
-        $bindValues = $this->sqlBind->getBindValues();
+        $bindValues = $this->getSqlBind()->getBindValues();
         foreach ($sqlArr as $k=>$v) {
             if(isset($bindValues[$k]) && $i != $lenArr){
                 $bindVal = $bindValues[$k];
