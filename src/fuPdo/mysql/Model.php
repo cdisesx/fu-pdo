@@ -18,6 +18,9 @@ class Model
 
     public function __construct(){}
 
+    /**
+     * @return Builder
+     */
     public static function Builder()
     {
         $Class = get_called_class();

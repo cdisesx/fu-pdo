@@ -27,7 +27,7 @@ class Error
     /**
      * @param int $error_code
      */
-    public function setErrorCode($error_code)
+    public function setErrorCode(int $error_code)
     {
         $this->error_code = $error_code;
     }
@@ -48,7 +48,7 @@ class Error
     /**
      * @param string $error_message
      */
-    public function setErrorMessage($error_message)
+    public function setErrorMessage(string $error_message)
     {
         $this->error_message = $error_message;
     }

@@ -9,8 +9,8 @@ class UserController
     public function getList()
     {
         $builder = UserModel::Builder()
-            ->Field('id,name,tel')
-            ->Field(['email'])
+            ->field('id,name,tel')
+            ->field(['email'])
             ->Page(3,10);
 //            ->Where('id in (?,?,?)', [60,61,62,63])
 //            ->Where('account = ?', ['wenbao'])
@@ -26,24 +26,24 @@ class UserController
     public function getJoinList()
     {
         $builder = UserModel::Builder()
-            ->Field('u.id,u.name,u.tel')
-            ->Field(['m.school_no','m.class_id'])
-            ->Field(['c.class_name'])
-            ->Table('user u')
-            ->LeftJoin('member_info m', 'm.user_id = u.id')
-            ->LeftJoin('class_info c', 'c.id = m.class_id')
-            ->Page(1,10)
-            ->GroupBy('u.id')
-            ->OrderBy('u.id asc')
-            ->OrderBy('c.class_name desc')
-            ->Where('u.id in (?,?,?)', [60,61,62,63])
-            ->Where('u.account = ?', ['wenbao']);
+            ->field('u.id,u.name,u.tel')
+            ->field(['m.school_no','m.class_id'])
+            ->field(['c.class_name'])
+            ->table('user u')
+            ->join('member_info m', 'm.user_id = u.id')
+            ->join('class_info c', 'c.id = m.class_id')
+            ->page(1,10)
+            ->groupBy('u.id')
+            ->orderBy('u.id asc')
+            ->orderBy('c.class_name desc')
+            ->where('u.id in (?,?,?)', [60,61,62,63])
+            ->where('u.account = ?', ['wenbao']);
 //            ->GetSelectSql();
 //            ->Count();
 
         echo $builder->getSelectSql();
-        $data = $builder->Select();
-        $count = $builder->Count();
+        $data = $builder->select();
+        $count = $builder->count();
 
         return ['count'=>$count,'list'=>$data];
     }
@@ -51,11 +51,10 @@ class UserController
     public function getSqlErr()
     {
         $builder = UserModel::Builder()
-            ->Table('user u')
-            ->Where('lalalala in (?,?,?)', [60,61,62,63])
-            >Select();
+            ->table('user u')
+            ->where('lalalala in (?,?,?)', [60,61,62,63]);
 
-        $builder->Select();
+        $builder->select();
         var_dump( $builder->getErrorCode() );
         echo $builder->getErrorMessage();
     }
@@ -63,10 +62,10 @@ class UserController
     public function getDetail()
     {
         $data = UserModel::Builder()
-            ->Field('id,name,tel')
-            ->Field(['email'])
-            ->Where('id in (?,?,?)', [60,61,62,63])
-            ->Where('account = ?', ['wenbao'])
+            ->field('id,name,tel')
+            ->field(['email'])
+            ->where('id in (?,?,?)', [60,61,62,63])
+            ->where('account = ?', ['wenbao'])
             ->FindAsObj();
 
         return $data;
@@ -110,8 +109,8 @@ class UserController
 //        $data = $db->Insert($params);
 //        $db->RollBack();
 //
-//        $ata = $db->Field('id,name,tel')
-//            ->Field(['email'])
+//        $ata = $db->field('id,name,tel')
+//            ->field(['email'])
 //            ->Where('id in (?,?,?)', [60,61,62,63])
 //            ->Where('account = ?', ['wenbao'])
 //            ->Find();

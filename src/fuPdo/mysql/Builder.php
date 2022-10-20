@@ -40,6 +40,17 @@ class Builder extends SqlCreator
     private $error = null;
 
     /**
+     * @param string $field
+     * @return int|mixed|null|string
+     */
+    public function one($field = 'id')
+    {
+        $this->setSaveFields([$field]);
+        $this->createSelectSql();
+        return $this->getData(Runner::RunQuery, Runner::ReturnOneField);
+    }
+
+    /**
      * @return int|mixed|null|string
      */
     public function find()
@@ -109,15 +120,6 @@ class Builder extends SqlCreator
     {
         $this->createSelectSql();
         return $this->getData(Runner::RunQuery, Runner::ReturnObj);
-    }
-
-    /**
-     * @return int|mixed|null|string
-     */
-    public function one()
-    {
-        $this->createSelectSql();
-        return $this->getData(Runner::RunQuery, Runner::ReturnOneRow);
     }
 
     /**

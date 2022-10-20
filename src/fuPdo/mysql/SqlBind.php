@@ -42,9 +42,9 @@ class SqlBind
     }
 
     /**
-     * @param array $bindValues
+     * @param array | null $bindValues
      */
-    public function setBindValues($bindValues)
+    public function setBindValues(array $bindValues)
     {
         $this->bindValues = $bindValues;
     }
@@ -87,6 +87,20 @@ class SqlBind
             $this->addBindValues($bind->getBindValues());
         }
         return $this;
+    }
+
+    public static function GetMarks($params)
+    {
+        $pS = [];
+        if(!is_array($params)){
+            return '?';
+        }
+
+        $paramsLen = count($params);
+        for($i=0;$i<$paramsLen;$i++){
+            $pS[] = '?';
+        }
+        return join($pS, ",");
     }
 
 }

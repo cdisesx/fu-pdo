@@ -8,6 +8,7 @@ class Where
     private $or = [];
     private $createOr = false;
     private $emptyWhere = true;
+    public $emptyReturn = false;
 
     /**
      * @var SqlBind
@@ -92,6 +93,11 @@ class Where
 
     public function mergeWhere(Where $where)
     {
+        if($where->isEmptyWhere()){
+            return $this;
+        }
+        $this->emptyReturn &= $where->emptyReturn;
+
         foreach ($where->and as $and) {
             $this->where($and['sql'], $and['bind']);
         }
@@ -100,6 +106,13 @@ class Where
 
     public function mergeWhereOr(Where $where)
     {
+        if($where->isEmptyWhere()){
+            return $this;
+        }
+        if($where->emptyReturn){
+            return $this;
+        }
+
         $mergeBind = $where->getSqlBind();
         $this->where($mergeBind->getSql(), $mergeBind->getBindValues(), 'or');
         return $this;
@@ -125,10 +138,11 @@ class Where
      */
     public static function NewAssignWhere($field, string $assign, $params)
     {
+        $newWhere = new self();
         if(empty($params)){
+            $newWhere->emptyReturn = true;
             return false;
         }
-        $newWhere = new self();
 
         $assign = strtolower(trim(addslashes($assign)));
         $hasAllowAssign = false;
@@ -153,8 +167,8 @@ class Where
                         break;
                 }
             }else{
-                $ps = SqlCreator::GetPsSql($params);
-                $newWhere->where("{$field} {$assign} ($ps)", $params);
+                $marks = SqlBind::GetMarks($params);
+                $newWhere->where("{$field} {$assign} ($marks)", $params);
             }
         }
 
@@ -178,7 +192,7 @@ class Where
         }
 
         if(!$hasAllowAssign){
-            return false;
+            $newWhere->emptyReturn = true;
         }
 
         return $newWhere;
