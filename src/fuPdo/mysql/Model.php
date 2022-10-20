@@ -27,9 +27,9 @@ class Model
         $builder = Builder::getInstance($Class::$Db, $Class::$Table);
 
         $builder->setSaveFields($Class::$SaveFields);
-        $builder->setCreateField($Class::$CreateField);
-        $builder->setUpdateField($Class::$UpdateField);
-        $builder->setTimeFormat($Class::$timeFormat);
+        $builder->createField = $Class::$CreateField;
+        $builder->updateField = $Class::$UpdateField;
+        $builder->timeFormat = $Class::$timeFormat;
         return $builder;
     }
 

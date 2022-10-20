@@ -272,28 +272,21 @@ class SqlCreator
         if(($len = count($params)) > 0){
             if($this->createField){
                 $params[$this->createField] = date($this->timeFormat);
-                $len++;
             }
             if($this->updateField){
                 $params[$this->updateField] = date($this->timeFormat);
-                $len++;
-            }
-            $this->sqlBind->setBindValues([]);
-            $bindValues = array_values($params);
-            $this->setSaveFields(array_keys($params));
-            $this->sqlBind->addBindValues($bindValues, $len);
-
-            $bindArr = [];
-            for ($i = 0; $i<$len; $i++){
-                $bindArr[] = '?';
             }
 
+            $this->sqlBind = new SqlBind();
             $this->sqlBind->setSql('INSERT INTO ');
             $this->_initTableSql();
 
-            $this->sqlBind->addSql(' (');
-            $this->sqlBind->addSql(join(',', $this->saveFields));
-            $this->sqlBind->addSql(') VALUES (' . join(',', $bindArr) . ') ');
+            $insertFields = array_keys($params);
+            $this->sqlBind->addSql(' ('. join(',', $insertFields).')');
+            $this->sqlBind->addSql('VALUES ('. SqlBind::GetMarks($params).')');
+
+            $bindValues = array_values($params);
+            $this->sqlBind->addBindValues($bindValues);
         }
     }
 
