@@ -96,11 +96,13 @@ class Where
         if($where->isEmptyWhere()){
             return $this;
         }
-        $this->emptyReturn &= $where->emptyReturn;
+        $this->emptyReturn = ($this->emptyReturn || $where->emptyReturn);
 
+        $where->mergeOrWhereSql();
         foreach ($where->and as $and) {
             $this->where($and['sql'], $and['bind']);
         }
+
         return $this;
     }
 

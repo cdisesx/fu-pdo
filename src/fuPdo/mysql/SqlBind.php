@@ -44,7 +44,7 @@ class SqlBind
     /**
      * @param array | null $bindValues
      */
-    public function setBindValues(array $bindValues)
+    public function setBindValues(array|null $bindValues)
     {
         $this->bindValues = $bindValues;
     }

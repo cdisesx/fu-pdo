@@ -13,10 +13,10 @@ class Searcher
      * 用于SqlCreator中 WhereFields的参数生成
      * @param $params
      * @param $rules
-     * @param Error $error
+     * @param $error
      * @return array|false
      */
-    public static function GetParams($params, $rules, Error &$error)
+    public static function GetParams($params, $rules, &$error = "")
     {
         $queryFieldParams = [];
         foreach ($rules as $field => $rule) {
@@ -34,13 +34,16 @@ class Searcher
                 }
             }
 
-            if($queryOptions['required']??false && $param === ''){
-                $error->setErrorMessage("{$field} is now allow empty");
+
+            $required = $queryOptions['required'] ?? false;
+            if($required && $param === ''){
+                $error = "{$field} is now allow empty";
                 return false;
             }
 
             // 忽略空值
-            if(!$queryOptions['allowEmpty']??false && empty($param)){
+            $allowEmpty = $queryOptions['allowEmpty'] ?? false;
+            if(!$allowEmpty && empty($param)){
                 continue;
             }
 
@@ -83,13 +86,14 @@ class Searcher
             $resWhere->mergeWhere($orWhere);
         }
 
+        p($resWhere);
         return $resWhere;
     }
 
-    public static function GetWhereByRule($params, $rule, Error &$error)
+    public static function GetWhereByRule($params, $rule, &$error = "")
     {
         $searchParams = self::GetParams($params, $rule, $error);
-        if($error->getErrorMessage()){
+        if($error != ""){
             return false;
         }
         return self::GetWhere($searchParams);

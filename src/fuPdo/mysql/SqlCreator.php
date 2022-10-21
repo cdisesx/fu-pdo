@@ -239,7 +239,7 @@ class SqlCreator
      */
     protected function createSelectSql()
     {
-        $this->sqlBind->setBindValues([]);
+        $this->getSqlBind()->setBindValues([]);
         $this->sql = 'SELECT ';
         $this->_initSelectFieldSql();
 
@@ -258,15 +258,15 @@ class SqlCreator
      */
     protected function createCountSql()
     {
-        $this->sqlBind->setBindValues([]);
-        $this->sqlBind->setSql('SELECT count(1) FROM');
+        $this->getSqlBind()->setBindValues([]);
+        $this->getSqlBind()->setSql('SELECT count(1) FROM');
         $this->_initTableSql();
         $this->_initJoinSql();
         $this->_initWhereSql();
 
         if ($this->createGroup){
             $this->_initGroupSql();
-            $this->sqlBind->setSql('SELECT count(1) FROM (' . $this->sqlBind->getSql() . ')');
+            $this->getSqlBind()->setSql('SELECT count(1) FROM (' . $this->getSqlBind()->getSql() . ')');
         }
     }
 

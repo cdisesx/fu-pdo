@@ -56,6 +56,7 @@ class Builder extends SqlCreator
     public function find()
     {
         $this->CreateSelectSql();
+        p($this->getSqlBind()->getSql());
         return $this->getData(Runner::RunQuery, Runner::ReturnOneRow);
     }
 
