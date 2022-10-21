@@ -86,7 +86,6 @@ class Searcher
             $resWhere->mergeWhere($orWhere);
         }
 
-        p($resWhere);
         return $resWhere;
     }
 
